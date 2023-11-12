@@ -5,7 +5,7 @@ const asyncHandler = require('express-async-handler')
 exports.new = async (req, res, next) => {
   if (!req.user) return res.redirect('/login')
 
-  res.render('posts/new', { title: 'Create Post' })
+  res.render('posts/form', { title: 'Create Post' })
 }
 
 exports.create = [
@@ -24,6 +24,49 @@ exports.create = [
     }
 
     await post.save()
+    res.redirect(post.url)
+  }),
+]
+
+exports.edit = asyncHandler(async (req, res, next) => {
+  if (!req.user) return res.redirect('/login')
+
+  const post = await Post.findById(req.params.id)
+
+  if (!post) {
+    return next(new Error('Post not found!'))
+  } else if (post.user.toString() !== req.user._id.toString()) {
+    return next(new Error('You are not authorized to edit this post!'))
+  }
+
+  res.render('posts/form', { title: 'Edit Post', post: post })
+})
+
+exports.update = [
+  body('title', 'Title must be between 1 and 100 characters!').trim().isLength({ min: 1, max: 100 }).escape(),
+  body('body', 'Body must be between 1 and 1000 characters!').trim().isLength({ min: 1, max: 1000 }).escape(),
+
+  asyncHandler(async (req, res, next) => {
+    if (!req.user) return res.redirect('/login')
+
+    const errors = validationResult(req)
+
+    const post = await Post.findById(req.params.id)
+
+    if (!post) {
+      return next(new Error('Post not found!'))
+    } else if (post.user.toString() !== req.user._id.toString()) {
+      return next(new Error('You are not authorized to edit this post!'))
+    }
+
+    if (!errors.isEmpty()) {
+      return res.render('posts/form', { title: 'Edit Post', post: post, errors: errors.array() })
+    }
+
+    post.title = req.body.title
+    post.body = req.body.body
+    await post.save()
+
     res.redirect(post.url)
   }),
 ]

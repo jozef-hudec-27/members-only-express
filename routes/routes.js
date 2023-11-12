@@ -19,5 +19,7 @@ router.post('/membership', usersController.membership_post)
 router.get('/posts/create', postsController.new)
 router.post('/posts/create', postsController.create)
 router.get('/posts/:id', postsController.show)
+router.get('/posts/:id/update', postsController.edit)
+router.post('/posts/:id/update', postsController.update)
 
 module.exports = router
