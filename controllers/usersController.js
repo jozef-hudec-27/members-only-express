@@ -1,5 +1,6 @@
 const User = require('../models/user')
 const bcrypt = require('bcryptjs')
+const passport = require('passport')
 const { body, validationResult } = require('express-validator')
 
 exports.new = async (req, res) => {
@@ -52,3 +53,21 @@ exports.create = [
     })
   },
 ]
+
+exports.login_get = async (req, res) => {
+  res.render('users/login', { title: 'Login', error: req.flash ? req.flash('error') : null })
+}
+
+exports.login_post = passport.authenticate('local', {
+  successRedirect: '/',
+  failureRedirect: '/login',
+  failureFlash: true,
+})
+
+exports.logout = (req, res, next) => {
+  req.logout((err) => {
+    if (err) return next(err)
+
+    res.redirect('/')
+  })
+}

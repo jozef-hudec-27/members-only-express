@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser')
 const logger = require('morgan')
 const expressLayouts = require('express-ejs-layouts')
 const session = require('express-session')
+const flash = require('connect-flash')
 const passport = require('passport')
 const passportInitialize = require('./passport-config')
 require('dotenv').config()
@@ -38,8 +39,14 @@ app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(expressLayouts)
 app.use(session({ secret: process.env.EXPRESS_SESSION_SECRET, resave: false, saveUninitialized: true }))
+app.use(flash())
 app.use(passport.initialize())
 app.use(passport.session())
+
+app.use((req, res, next) => {
+  res.locals.currentUser = req.user
+  next()
+})
 
 app.use('/', indexRouter)
 

@@ -1,0 +1,10 @@
+<h1>POSTS LIST</h1>
+
+<% if (currentUser) { %>
+<h2>Welcome, <%= currentUser.username %></h2>
+<form action="/logout" method="post">
+  <button type="submit">Log Out</button>
+</form>
+<% } else { %>
+<h2>You're not logged in</h2>
+<% } %>
