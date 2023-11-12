@@ -4,6 +4,9 @@ const path = require('path')
 const cookieParser = require('cookie-parser')
 const logger = require('morgan')
 const expressLayouts = require('express-ejs-layouts')
+const session = require('express-session')
+const passport = require('passport')
+const passportInitialize = require('./passport-config')
 require('dotenv').config()
 
 const indexRouter = require('./routes/index')
@@ -21,6 +24,9 @@ async function dbConnect() {
   await mongoose.connect(mongoDB)
 }
 
+// auth setup
+passportInitialize(passport)
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'ejs')
@@ -32,6 +38,9 @@ app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(expressLayouts)
+app.use(session({ secret: process.env.EXPRESS_SESSION_SECRET, resave: false, saveUninitialized: true }))
+app.use(passport.initialize())
+app.use(passport.session())
 
 app.use('/', indexRouter)
 app.use('/users', usersRouter)
