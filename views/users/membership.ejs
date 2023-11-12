@@ -1,0 +1,18 @@
+<h1>Become a Member</h1>
+
+<p>Redeem a secret code below and become a member!</p>
+
+<form action="" method="post">
+  <div>
+    <label for="secretCode">Secret Code:</label>
+    <input type="text" name="secretCode" id="secretCode" required />
+  </div>
+
+  <button type="submit">Redeem</button>
+</form>
+
+<ul>
+  <% locals.errors?.map(err => { %>
+  <li><%= err.msg %></li>
+  <% }) %>
+</ul>

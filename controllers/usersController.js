@@ -2,6 +2,7 @@ const User = require('../models/user')
 const bcrypt = require('bcryptjs')
 const passport = require('passport')
 const { body, validationResult } = require('express-validator')
+const asyncHandler = require('express-async-handler')
 
 exports.new = async (req, res) => {
   res.render('users/sign_up', { title: 'Sign Up' })
@@ -71,3 +72,32 @@ exports.logout = (req, res, next) => {
     res.redirect('/')
   })
 }
+
+exports.membership_get = async (req, res, next) => {
+  if (!req.user) {
+    return res.redirect('/login')
+  } else if (req.user.isMember) {
+    return res.redirect('/')
+  }
+
+  res.render('users/membership', { title: 'Become a Member' })
+}
+
+exports.membership_post = [
+  body('secretCode', 'Wrong secret code!').trim().escape().equals('cats'),
+
+  asyncHandler(async (req, res, next) => {
+    const user = req.user
+
+    if (!user) return res.redirect('/login')
+
+    const errors = validationResult(req)
+
+    if (!errors.isEmpty()) {
+      return res.render('users/membership', { title: 'Become a Member', errors: errors.array() })
+    }
+
+    await User.findByIdAndUpdate(user._id, { isMember: true })
+    res.redirect('/')
+  }),
+]

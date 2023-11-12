@@ -1,0 +1,25 @@
+<nav class="w-full bg-blue-50 py-4 px-6 flex items-center justify-between">
+  <a href="/" class="text-xl font-bold">Members Only</a>
+
+  <% if (currentUser){ %>
+  <div class="flex items-center gap-4">
+    <% if (!currentUser.isMember) { %>
+    <a href="/membership">Become a Member</a>
+    <% } %>
+
+    <a href="/posts/create">Create Post</a>
+
+    <div class="flex items-center gap-4">
+      <span>Welcome, <%= currentUser.username %></span>
+      <form action="/logout" method="post">
+        <button type="submit">Log Out</button>
+      </form>
+    </div>
+  </div>
+  <% } else { %>
+  <div class="flex items-center gap-4">
+    <a href="/sign_up">Sign Up</a>
+    <a href="/login">Log In</a>
+  </div>
+  <% } %>
+</nav>
