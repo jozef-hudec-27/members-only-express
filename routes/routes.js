@@ -21,5 +21,6 @@ router.post('/posts/create', postsController.create)
 router.get('/posts/:id', postsController.show)
 router.get('/posts/:id/update', postsController.edit)
 router.post('/posts/:id/update', postsController.update)
+router.post('/posts/:id/delete', postsController.delete)
 
 module.exports = router

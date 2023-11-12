@@ -71,6 +71,22 @@ exports.update = [
   }),
 ]
 
+exports.delete = asyncHandler(async (req, res, next) => {
+  if (!req.user) return res.redirect('/login')
+
+  const post = await Post.findById(req.params.id)
+
+  if (!post) {
+    return next(new Error('Post not found!'))
+  } else if (post.user.toString() !== req.user._id.toString()) {
+    return next(new Error('You are not authorized to delete this post!'))
+  }
+
+  await Post.findByIdAndDelete(req.params.id)
+
+  res.redirect('/')
+})
+
 exports.index = asyncHandler(async (req, res, next) => {
   const posts = await Post.find().populate('user')
 
