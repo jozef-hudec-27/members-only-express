@@ -1,0 +1,10 @@
+<h1>Post by <%= currentUser?.isMember ? post.user.fullName : 'UNKNOWN' %></h1>
+
+<div>
+  <% if (currentUser?.isMember) { %>
+  <em><%= post.createdAt %></em>
+  <% } %>
+
+  <h2><%= post.title %></h2>
+  <p><%= post.body %></p>
+</div>

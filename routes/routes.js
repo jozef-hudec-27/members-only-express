@@ -1,10 +1,8 @@
 const router = require('express').Router()
-const passport = require('passport')
 const usersController = require('../controllers/usersController')
+const postsController = require('../controllers/postsController')
 
-router.get('/', async (req, res) => {
-  res.render('posts/index', { title: 'Home' })
-})
+router.get('/', postsController.index)
 
 // users
 // authentication
@@ -16,5 +14,10 @@ router.post('/logout', usersController.logout)
 
 router.get('/membership', usersController.membership_get)
 router.post('/membership', usersController.membership_post)
+
+// posts
+router.get('/posts/create', postsController.new)
+router.post('/posts/create', postsController.create)
+router.get('/posts/:id', postsController.show)
 
 module.exports = router
